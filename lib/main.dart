@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:molotov_jass_counter/screens/game.dart';
+import 'package:molotov_jass_counter/screens/new_game.dart';
 
 import 'screens/home.dart';
 
@@ -13,8 +15,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Molotov counter',
-      theme: ThemeData(primarySwatch: Colors.green, useMaterial3: true),
-      home: const MyHomePage(title: 'Molotov counter'),
+      theme: ThemeData(
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 171, 117, 0)),
+          useMaterial3: true),
+      routes: {
+        '/': (context) => HomeScreen(title: 'Molotov counter'),
+        '/game/new': (context) => NewGameScreen(title: 'Neues Spiel'),
+      },
     );
   }
 }
