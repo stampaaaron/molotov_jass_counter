@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:molotov_jass_counter/models/current_game.dart';
+import 'package:provider/provider.dart';
 
 import '../models/player.dart';
 
@@ -29,14 +31,16 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Table(
-          children: [
-            TableRow(
-                children: players
-                    .map((player) =>
-                        TableCell(child: Text(player.username ?? '')))
-                    .toList())
-          ],
+        child: Consumer<CurrentGameModel>(
+          builder: (context, value, child) => Table(
+            children: [
+              TableRow(
+                  children: value.currentGame?.players
+                      .map((player) =>
+                          TableCell(child: Text(player.username ?? '')))
+                      .toList())
+            ],
+          ),
         ),
       ),
       floatingActionButton: Wrap(
