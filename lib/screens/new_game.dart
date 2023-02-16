@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:molotov_jass_counter/models/player.dart';
 
 import '../models/game.dart';
@@ -13,21 +14,23 @@ class NewGameScreen extends StatefulWidget {
 }
 
 class _NewGameScreenState extends State<NewGameScreen> {
-  final _game = Game([
-    Player('Hans'),
-    Player(''),
-    Player(''),
-    Player(''),
-  ]);
+  final _game = Game(List.generate(4, (index) => Player("")));
 
-  _addPlayer() => setState(() {
-        _game.players.add(Player(""));
-      });
+  List<PlayerForm> _getPlayerForms() => _game.players
+      .map((player) => PlayerForm(
+          index: _game.players.indexOf(player),
+          player: player,
+          onDelete: _removePlayer,
+          amountOfPlayers: _game.players.length))
+      .toList();
 
+  _addPlayer() => setState(() => _game.players.add(Player("")));
   _removePlayer(int index) => setState(() {
         _game.players.removeAt(index);
-        print(_game.players.map((e) => e.username).toList());
+        SchedulerBinding.instance.addPostFrameCallback((_) => validate());
       });
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   build(context) {
@@ -65,18 +68,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
                   "Mitspieler ${_game.players.length >= 8 ? '(max. 8)' : ''}",
                   style: theme.textTheme.labelLarge,
                 ),
-                for (var i = 0; i < _game.players.length; i++)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      PlayerForm(index: i, player: _game.players[i]),
-                      IconButton(
-                          onPressed: _game.players.length > 3
-                              ? () => _removePlayer(i)
-                              : null,
-                          icon: const Icon(Icons.delete))
-                    ],
-                  ),
+                Form(
+                  key: formKey,
+                  child: Column(children: _getPlayerForms()),
+                ),
                 const SizedBox(height: 20),
                 OutlinedButton.icon(
                     onPressed: _game.players.length < 8 ? _addPlayer : null,
@@ -88,7 +83,11 @@ class _NewGameScreenState extends State<NewGameScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
         child: FilledButton(
-          onPressed: () => print(_game.players.map((e) => e.username).toList()),
+          onPressed: () {
+            if (validate()) {
+              Navigator.pushNamed(context, "/game");
+            }
+          },
           style:
               ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
           child: const Text("Starten"),
@@ -96,30 +95,42 @@ class _NewGameScreenState extends State<NewGameScreen> {
       ),
     );
   }
+
+  bool validate() {
+    bool validate = formKey.currentState?.validate() ?? false;
+    if (validate) formKey.currentState?.save();
+    return validate;
+  }
 }
 
 class PlayerForm extends StatefulWidget {
   final int index;
   final Player player;
+  final Function onDelete;
+  final int amountOfPlayers;
 
   late final TextEditingController _usernameController;
 
-  PlayerForm({super.key, required this.index, required this.player}) {
+  PlayerForm(
+      {super.key,
+      required this.index,
+      required this.player,
+      required this.onDelete,
+      required this.amountOfPlayers}) {
     _usernameController = TextEditingController(text: player.username);
   }
 
   @override
-  createState() => _PlayerFormState();
+  State<StatefulWidget> createState() => _PlayerFormState();
 }
 
 class _PlayerFormState extends State<PlayerForm> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   build(context) {
-    return Form(
-        key: _formKey,
-        child: Expanded(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
           child: TextFormField(
             decoration: InputDecoration(
               hintText: 'Spieler ${widget.index + 1}',
@@ -127,7 +138,19 @@ class _PlayerFormState extends State<PlayerForm> {
             controller: widget._usernameController,
             onChanged: (value) => widget.player.username = value,
             onSaved: (value) => widget.player.username = value,
+            validator: (value) => value == null || value.isEmpty
+                ? 'Feld darf nicht leer sein.'
+                : null,
+            textInputAction: TextInputAction.next,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
-        ));
+        ),
+        IconButton(
+            onPressed: widget.amountOfPlayers > 3
+                ? () => widget.onDelete(widget.index)
+                : null,
+            icon: const Icon(Icons.delete))
+      ],
+    );
   }
 }
