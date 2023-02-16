@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:molotov_jass_counter/models/game.dart';
 import 'package:molotov_jass_counter/screens/game.dart';
 import 'package:molotov_jass_counter/screens/new_game.dart';
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomeScreen(title: 'Molotov counter'),
         '/game/new': (context) => NewGameScreen(title: 'Neues Spiel'),
+        '/game': (context) => GameScreen(title: 'Neues Spiel'),
       },
     );
   }
