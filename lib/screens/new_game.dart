@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:molotov_jass_counter/models/current_game.dart';
 import 'package:molotov_jass_counter/models/player.dart';
+import 'package:provider/provider.dart';
 
 import '../models/game.dart';
 
@@ -86,6 +88,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
           onPressed: () {
             if (validate()) {
               Navigator.pushNamed(context, "/game");
+              Provider.of<CurrentGameModel>(context, listen: false)
+                  .currentGame = _game;
             }
           },
           style:
