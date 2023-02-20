@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => HomeScreen(title: 'Molotov counter'),
           '/game/new': (context) => NewGameScreen(title: 'Neues Spiel'),
-          '/game': (context) => GameScreen(title: 'Neues Spiel'),
+          '/game': (context) => GameScreen(title: 'Spiel'),
         },
       ),
     );
