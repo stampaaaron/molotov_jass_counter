@@ -101,13 +101,22 @@ class _GameScreenState extends State<GameScreen> {
                 children: [
                   FloatingActionButton.small(
                     onPressed: () async {
+                      final scaffoldMessenger = ScaffoldMessenger.of(context);
+
                       if (value.currentGame?.players != null) {
                         var player =
                             await choosePlayer(value.currentGame!.players);
                         if (player != null) {
-                          var test = await chooseAmountOfPoints();
-                          print(player.username);
-                          print(test);
+                          var points = await chooseAmountOfPoints();
+
+                          final snackbar = SnackBar(
+                            content: Text('${player.username} weist $points'),
+                            duration: const Duration(seconds: 2),
+                          );
+
+                          if (points != null) {
+                            scaffoldMessenger.showSnackBar(snackbar);
+                          }
                         }
                       }
                     },
