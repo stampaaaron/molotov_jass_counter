@@ -11,10 +11,7 @@ class CurrentGameModel extends ChangeNotifier {
   addPointsFor(int points, Player player) {
     if (_currentGame == null) return;
 
-    _currentGame!.rounds.add({
-      ...Game.setupRoundEntry(_currentGame!.players),
-      ...{player: points}
-    });
+    _currentGame!.rounds.add({player: points});
     notifyListeners();
   }
 }

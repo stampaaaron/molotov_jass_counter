@@ -99,10 +99,10 @@ class _GameScreenState extends State<GameScreen> {
                                 bottom: BorderSide(
                                     color: theme.colorScheme.primary)),
                           ),
-                          children: value.currentGame?.totals.entries
-                              .map((entry) => TableCell(
+                          children: value.currentGame?.players
+                              .map((player) => TableCell(
                                       child: Text(
-                                    '${entry.value ?? ''}',
+                                    '${value.currentGame?.totals[player] ?? 0}',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
@@ -110,10 +110,10 @@ class _GameScreenState extends State<GameScreen> {
                               .toList()),
                       ...?value.currentGame?.rounds
                           .map((round) => TableRow(
-                              children: round.entries
-                                  .map((entry) => TableCell(
+                              children: value.currentGame?.players
+                                  .map((player) => TableCell(
                                           child: Text(
-                                        '${entry.value ?? ''}',
+                                        '${round[player] ?? ''}',
                                         textAlign: TextAlign.end,
                                       )))
                                   .toList()))
