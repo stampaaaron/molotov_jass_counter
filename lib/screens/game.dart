@@ -88,6 +88,11 @@ class _GameScreenState extends State<GameScreen> {
                                 .map((player) => TableCell(
                                     child: Text(player.username ?? '')))
                                 .toList()),
+                        TableRow(
+                            children: value.currentGame?.totals.entries
+                                .map((entry) => TableCell(
+                                    child: Text(entry.value?.toString() ?? '')))
+                                .toList()),
                         ...?value.currentGame?.rounds
                             .map((round) => TableRow(
                                 children: round.entries
