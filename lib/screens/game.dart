@@ -77,34 +77,50 @@ class _GameScreenState extends State<GameScreen> {
               appBar: AppBar(
                 title: Text(widget.title),
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    Table(
-                      children: [
-                        TableRow(
-                            children: value.currentGame?.players
-                                .map((player) => TableCell(
-                                    child: Text(player.username ?? '')))
-                                .toList()),
-                        TableRow(
-                            children: value.currentGame?.totals.entries
-                                .map((entry) => TableCell(
-                                    child: Text(entry.value?.toString() ?? '')))
-                                .toList()),
-                        ...?value.currentGame?.rounds
-                            .map((round) => TableRow(
-                                children: round.entries
-                                    .map((entry) => TableCell(
-                                        child: Text(
-                                            entry.value?.toString() ?? '')))
-                                    .toList()))
-                            .toList()
-                      ],
-                    ),
-                  ],
-                ),
+              body: Column(
+                children: [
+                  Table(
+                    children: [
+                      TableRow(
+                          decoration: BoxDecoration(
+                              color: theme.colorScheme.secondaryContainer),
+                          children: value.currentGame?.players
+                              .map((player) => TableCell(
+                                      child: Text(
+                                    player.username ?? '',
+                                    style: theme.textTheme.labelLarge,
+                                    textAlign: TextAlign.center,
+                                  )))
+                              .toList()),
+                      TableRow(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.secondaryContainer,
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: theme.colorScheme.primary)),
+                          ),
+                          children: value.currentGame?.totals.entries
+                              .map((entry) => TableCell(
+                                      child: Text(
+                                    '${entry.value ?? ''}',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  )))
+                              .toList()),
+                      ...?value.currentGame?.rounds
+                          .map((round) => TableRow(
+                              children: round.entries
+                                  .map((entry) => TableCell(
+                                          child: Text(
+                                        '${entry.value ?? ''}',
+                                        textAlign: TextAlign.end,
+                                      )))
+                                  .toList()))
+                          .toList()
+                    ],
+                  ),
+                ],
               ),
               floatingActionButton: Wrap(
                 alignment: WrapAlignment.end,
