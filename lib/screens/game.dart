@@ -87,7 +87,15 @@ class _GameScreenState extends State<GameScreen> {
                             children: value.currentGame?.players
                                 .map((player) => TableCell(
                                     child: Text(player.username ?? '')))
-                                .toList())
+                                .toList()),
+                        ...?value.currentGame?.rounds
+                            .map((round) => TableRow(
+                                children: round.entries
+                                    .map((entry) => TableCell(
+                                        child: Text(
+                                            entry.value?.toString() ?? '')))
+                                    .toList()))
+                            .toList()
                       ],
                     ),
                   ],
@@ -115,6 +123,7 @@ class _GameScreenState extends State<GameScreen> {
                           );
 
                           if (points != null) {
+                            value.addPointsFor(points, player);
                             scaffoldMessenger.showSnackBar(snackbar);
                           }
                         }
