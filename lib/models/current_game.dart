@@ -9,6 +9,8 @@ class CurrentGameModel extends ChangeNotifier {
   set currentGame(Game? game) => _currentGame = game;
 
   addPointsFor(int points, Player player) {
+    final reducedPoints = (points / 10).floor();
+
     final rows = _currentGame?.rows;
     if (rows == null) return;
 
@@ -16,7 +18,7 @@ class CurrentGameModel extends ChangeNotifier {
       rows.add(GameRow(false));
     }
 
-    rows.last.points[player] = (rows.last.points[player] ?? 0) + points;
+    rows.last.points[player] = (rows.last.points[player] ?? 0) + reducedPoints;
     notifyListeners();
   }
 }
