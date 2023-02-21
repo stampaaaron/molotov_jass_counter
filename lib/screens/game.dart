@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:molotov_jass_counter/models/current_game.dart';
+import 'package:molotov_jass_counter/utils/validation.dart';
 import 'package:molotov_jass_counter/widgets/simple_dialog_option_grid.dart';
 import 'package:provider/provider.dart';
 
 import '../models/player.dart';
+import '../widgets/count_round_dialog.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.title});
@@ -19,11 +22,10 @@ class _GameScreenState extends State<GameScreen> {
   build(BuildContext context) {
     var theme = Theme.of(context);
 
-    choosePlayer(List<Player> players) async {
-      return await showDialog<Player>(
-          context: context,
-          builder: (BuildContext context) {
-            return SimpleDialog(title: const Text('Weisen'), children: [
+    choosePlayer(List<Player> players) async => await showDialog<Player>(
+        context: context,
+        builder: (context) =>
+            SimpleDialog(title: const Text('Weisen'), children: [
               SimpleDialogOptionGrid(
                 buildContent: (player) => Text(
                   '${player.username}',
@@ -31,9 +33,7 @@ class _GameScreenState extends State<GameScreen> {
                 ),
                 options: players,
               ),
-            ]);
-          });
-    }
+            ]));
 
     chooseAmountOfPoints() async {
       final pointOptions = [
@@ -53,26 +53,32 @@ class _GameScreenState extends State<GameScreen> {
 
       return await showDialog<int>(
           context: context,
-          builder: (BuildContext context) {
-            return SimpleDialog(title: const Text('Weisen'), children: [
-              SimpleDialogOptionGrid(
-                  buildContent: (points) => Center(
-                          child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            points.isNegative ? Icons.remove : Icons.add,
-                            size: 20,
-                          ),
-                          Text(
-                            '${points.abs()}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )),
-                  options: pointOptions),
-            ]);
-          });
+          builder: (context) =>
+              SimpleDialog(title: const Text('Weisen'), children: [
+                SimpleDialogOptionGrid(
+                    buildContent: (points) => Center(
+                            child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              points.isNegative ? Icons.remove : Icons.add,
+                              size: 20,
+                            ),
+                            Text(
+                              '${points.abs()}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )),
+                    options: pointOptions),
+              ]));
+    }
+
+    countRound(List<Player> players) async {
+      return await showDialog<Map<Player, int?>>(
+          context: context,
+          builder: (builder) => CountRoundDialog(players: players));
     }
 
     return Consumer<CurrentGameModel>(
@@ -178,7 +184,15 @@ class _GameScreenState extends State<GameScreen> {
                   FloatingActionButton.extended(
                     backgroundColor: theme.primaryColor,
                     foregroundColor: theme.colorScheme.onPrimary,
-                    onPressed: () => null,
+                    onPressed: () async {
+                      if (value.currentGame?.players == null) return;
+
+                      var points = await countRound(value.currentGame!.players);
+
+                      if (points == null) return;
+
+                      value.addNewRound(points);
+                    },
                     label: const Text('Zählen'),
                     icon: const Icon(Icons.add),
                   ),

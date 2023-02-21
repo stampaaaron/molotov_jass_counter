@@ -15,7 +15,7 @@ class Game {
 
 class GameRow {
   final bool isNewRound;
-  final Map<Player, int?> points = {};
+  final Map<Player, int?> points;
 
-  GameRow(this.isNewRound);
+  GameRow(this.isNewRound, {this.points = const {}});
 }

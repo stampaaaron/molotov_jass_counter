@@ -3,15 +3,12 @@ import 'package:molotov_jass_counter/models/game.dart';
 import 'package:molotov_jass_counter/models/player.dart';
 
 class CurrentGameModel extends ChangeNotifier {
-  Game? _currentGame;
-
-  Game? get currentGame => _currentGame;
-  set currentGame(Game? game) => _currentGame = game;
+  Game? currentGame;
 
   addPointsFor(int points, Player player) {
     final reducedPoints = (points / 10).floor();
 
-    final rows = _currentGame?.rows;
+    final rows = currentGame?.rows;
     if (rows == null) return;
 
     if (rows.isEmpty || rows.last.isNewRound) {
@@ -19,6 +16,11 @@ class CurrentGameModel extends ChangeNotifier {
     }
 
     rows.last.points[player] = (rows.last.points[player] ?? 0) + reducedPoints;
+    notifyListeners();
+  }
+
+  addNewRound(Map<Player, int?> points) {
+    currentGame?.rows.add(GameRow(true, points: points));
     notifyListeners();
   }
 }

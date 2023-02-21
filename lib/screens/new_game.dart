@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:molotov_jass_counter/models/current_game.dart';
 import 'package:molotov_jass_counter/models/player.dart';
+import 'package:molotov_jass_counter/utils/validation.dart';
 import 'package:provider/provider.dart';
 
 import '../models/game.dart';
@@ -142,9 +143,7 @@ class _PlayerFormState extends State<PlayerForm> {
             controller: widget._usernameController,
             onChanged: (value) => widget.player.username = value,
             onSaved: (value) => widget.player.username = value,
-            validator: (value) => value == null || value.isEmpty
-                ? 'Feld darf nicht leer sein.'
-                : null,
+            validator: notEmptyValidator,
             textInputAction: TextInputAction.next,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
