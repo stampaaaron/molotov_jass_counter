@@ -147,19 +147,25 @@ class _GameScreenState extends State<GameScreen> {
                       if (value.currentGame?.players != null) {
                         var player =
                             await choosePlayer(value.currentGame!.players);
-                        if (player != null) {
-                          var points = await chooseAmountOfPoints();
 
-                          final snackbar = SnackBar(
-                            content: Text('${player.username} weist $points'),
-                            duration: const Duration(seconds: 2),
-                          );
+                        if (player == null) return;
 
-                          if (points != null) {
-                            value.addPointsFor(points, player);
-                            scaffoldMessenger.showSnackBar(snackbar);
-                          }
-                        }
+                        var points = await chooseAmountOfPoints();
+
+                        if (points == null) return;
+
+                        final snackbar = SnackBar(
+                          content: Text('${player.username} weist $points'),
+                          duration: const Duration(seconds: 2),
+                          action: SnackBarAction(
+                            label: "Rückgängig",
+                            onPressed: () =>
+                                value.addPointsFor(-1 * points, player),
+                          ),
+                        );
+
+                        value.addPointsFor(points, player);
+                        scaffoldMessenger.showSnackBar(snackbar);
                       }
                     },
                     tooltip: 'Weisen',
