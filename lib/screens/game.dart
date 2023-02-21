@@ -25,9 +25,12 @@ class _GameScreenState extends State<GameScreen> {
           builder: (BuildContext context) {
             return SimpleDialog(title: const Text('Weisen'), children: [
               SimpleDialogOptionGrid(
-                  buildContent: (player) => Text('${player.username}',
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  options: players),
+                buildContent: (player) => Text(
+                  '${player.username}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                options: players,
+              ),
             ]);
           });
     }
@@ -80,18 +83,22 @@ class _GameScreenState extends State<GameScreen> {
               body: Column(
                 children: [
                   Table(
+                    columnWidths: const {0: FixedColumnWidth(10)},
                     children: [
                       TableRow(
                           decoration: BoxDecoration(
                               color: theme.colorScheme.secondaryContainer),
-                          children: value.currentGame?.players
-                              .map((player) => TableCell(
-                                      child: Text(
-                                    player.username ?? '',
-                                    style: theme.textTheme.labelLarge,
-                                    textAlign: TextAlign.center,
-                                  )))
-                              .toList()),
+                          children: [
+                            TableCell(child: Container()),
+                            ...?value.currentGame?.players
+                                .map((player) => TableCell(
+                                        child: Text(
+                                      player.username ?? '',
+                                      style: theme.textTheme.labelLarge,
+                                      textAlign: TextAlign.center,
+                                    )))
+                                .toList()
+                          ]),
                       TableRow(
                           decoration: BoxDecoration(
                             color: theme.colorScheme.secondaryContainer,
@@ -99,24 +106,29 @@ class _GameScreenState extends State<GameScreen> {
                                 bottom: BorderSide(
                                     color: theme.colorScheme.primary)),
                           ),
-                          children: value.currentGame?.players
-                              .map((player) => TableCell(
-                                      child: Text(
-                                    '${value.currentGame?.totals[player] ?? 0}',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  )))
-                              .toList()),
-                      ...?value.currentGame?.rounds
-                          .map((round) => TableRow(
-                              children: value.currentGame?.players
-                                  .map((player) => TableCell(
-                                          child: Text(
-                                        '${round[player] ?? ''}',
-                                        textAlign: TextAlign.end,
-                                      )))
-                                  .toList()))
+                          children: [
+                            const TableCell(child: Text("T")),
+                            ...?value.currentGame?.players
+                                .map((player) => TableCell(
+                                        child: Text(
+                                      '${value.currentGame?.totals[player] ?? 0}',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )))
+                                .toList()
+                          ]),
+                      ...?value.currentGame?.rows
+                          .map((row) => TableRow(children: [
+                                TableCell(child: Text("1")),
+                                ...?value.currentGame?.players
+                                    .map((player) => TableCell(
+                                            child: Text(
+                                          '${row.points[player] ?? ''}',
+                                          textAlign: TextAlign.end,
+                                        )))
+                                    .toList()
+                              ]))
                           .toList()
                     ],
                   ),

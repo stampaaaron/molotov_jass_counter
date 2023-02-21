@@ -9,9 +9,14 @@ class CurrentGameModel extends ChangeNotifier {
   set currentGame(Game? game) => _currentGame = game;
 
   addPointsFor(int points, Player player) {
-    if (_currentGame == null) return;
+    final rows = _currentGame?.rows;
+    if (rows == null) return;
 
-    _currentGame!.rounds.add({player: points});
+    if (rows.isEmpty || rows.last.isNewRound) {
+      rows.add(GameRow(false));
+    }
+
+    rows.last.points[player] = (rows.last.points[player] ?? 0) + points;
     notifyListeners();
   }
 }
