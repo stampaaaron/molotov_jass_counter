@@ -18,13 +18,30 @@ class _CountRoundDialogState extends State<CountRoundDialog> {
 
   Map<Player, int?> points = {};
 
-  get usedPoints => points.values.isEmpty
+  get usedPoints => points.isEmpty
       ? 0
-      : points.values.reduce((cur, prev) => (prev ?? 0) + (cur ?? 0));
+      : points.values.map((e) => e ?? 0).reduce((cur, prev) => prev + cur);
 
   @override
   build(context) {
     final theme = Theme.of(context);
+
+    handleFillingLastField() {
+      if (points.length < widget.players.length - 1 || widget.players.isEmpty) {
+        return;
+      }
+
+      final playersNotCounted =
+          widget.players.where((player) => !points.containsKey(player));
+
+      if (playersNotCounted.length != 1) return;
+
+      final pointsLeft = 157 - usedPoints;
+      setState(() {
+        points[playersNotCounted.first] =
+            pointsLeft.isNegative ? 0 : pointsLeft.toInt();
+      });
+    }
 
     return AlertDialog(
       title: const Text("Runde zählen"),
@@ -40,22 +57,38 @@ class _CountRoundDialogState extends State<CountRoundDialog> {
                 style: theme.textTheme.labelLarge,
               ),
               ...widget.players
-                  .map((player) => TextFormField(
-                        autofocus: player == widget.players.first,
-                        decoration: InputDecoration(labelText: player.username),
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        validator: notEmptyValidator,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: (value) => setState(
-                            () => points[player] = int.tryParse(value) ?? 0),
-                        onSaved: (value) {
-                          if (value == null) return;
-                          setState(
-                              () => points[player] = int.tryParse(value) ?? 0);
+                  .map((player) => Focus(
+                        child: TextFormField(
+                          autofocus: player == widget.players.first,
+                          decoration:
+                              InputDecoration(labelText: player.username),
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: notEmptyValidator,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: (value) {
+                            points[player] = int.tryParse(value) ?? 0;
+                          },
+                          onSaved: (value) {
+                            setState(() {
+                              if (value?.isEmpty ?? false) {
+                                points.remove(player);
+                              } else {
+                                points[player] = int.tryParse(value!) ?? 0;
+                              }
+                            });
+                          },
+                          controller: TextEditingController(
+                              text: (points[player] ?? '').toString()),
+                        ),
+                        onFocusChange: (hasFocus) {
+                          if (!hasFocus) {
+                            formKey.currentState?.save();
+                            handleFillingLastField();
+                          }
                         },
                       ))
                   .toList()
