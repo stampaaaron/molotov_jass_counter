@@ -140,9 +140,10 @@ class _GameScreenState extends State<GameScreen> {
                                     TableCell(child: Container()),
                                     ...?value.currentGame?.players
                                         .map((player) {
-                                      final additionalPoints =
-                                          round.points[player]?.additional ??
-                                              [];
+                                      final additionalPoints = round
+                                              .points[player]
+                                              ?.reducedAdditional ??
+                                          [];
                                       return TableCell(
                                         child: Text(
                                           '${additionalPoints.length > i ? additionalPoints[i] : ''}',
@@ -164,7 +165,7 @@ class _GameScreenState extends State<GameScreen> {
                                     ...?value.currentGame?.players
                                         .map((player) => TableCell(
                                                 child: Text(
-                                              '${round.points[player]?.counted ?? ''}',
+                                              '${round.points[player]?.reducedCounted ?? ''}',
                                               textAlign: TextAlign.center,
                                             )))
                                         .toList(),

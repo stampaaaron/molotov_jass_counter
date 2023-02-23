@@ -9,10 +9,11 @@ class Game {
       ? rounds
           .map((round) => round.points.map((key, value) => MapEntry(
                 key,
-                (value.counted ?? 0) +
+                (value.reducedCounted) +
                     (value.additional.isEmpty
                         ? 0
-                        : value.additional.reduce((cur, prev) => cur + prev)),
+                        : value.reducedAdditional
+                            .reduce((cur, prev) => cur + prev)),
               )))
           .reduce((prev, cur) => prev
               .map((key, value) => MapEntry(key, (value + (cur[key] ?? 0)))))
@@ -37,6 +38,10 @@ class GameRound {
 class PlayerPoints {
   int? counted;
   List<int> additional = [];
+
+  int get reducedCounted => ((counted ?? 0) / 10).round();
+  List<int> get reducedAdditional =>
+      additional.map((points) => (points / 10).round()).toList();
 
   PlayerPoints();
 }

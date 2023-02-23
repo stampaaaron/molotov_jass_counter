@@ -6,9 +6,7 @@ class CurrentGameModel extends ChangeNotifier {
   Game? currentGame;
 
   addPointsFor(int points, Player player) {
-    final reducedPoints = (points / 10).floor();
-
-    currentGame?.rounds.last.points[player]?.additional.add(reducedPoints);
+    currentGame?.rounds.last.points[player]?.additional.add(points);
     notifyListeners();
   }
 
