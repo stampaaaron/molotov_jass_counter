@@ -115,7 +115,7 @@ class _GameScreenState extends State<GameScreen> {
                                     color: theme.colorScheme.primary)),
                           ),
                           children: [
-                            const TableCell(child: Text("T")),
+                            TableCell(child: Container()),
                             ...?value.currentGame?.players
                                 .map((player) => TableCell(
                                         child: Text(
@@ -136,40 +136,59 @@ class _GameScreenState extends State<GameScreen> {
                                             .map((e) => e.additional.length)
                                             .reduce(max);
                                     i++)
-                                  TableRow(children: [
-                                    TableCell(child: Container()),
-                                    ...?value.currentGame?.players
-                                        .map((player) {
-                                      final additionalPoints = round
-                                              .points[player]
-                                              ?.reducedAdditional ??
-                                          [];
-                                      return TableCell(
-                                        child: Text(
-                                          '${additionalPoints.length > i ? additionalPoints[i] : ''}',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      );
-                                    }).toList()
-                                  ]),
+                                  TableRow(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: theme.colorScheme
+                                                    .surfaceVariant)),
+                                      ),
+                                      children: [
+                                        TableCell(child: Container()),
+                                        ...?value.currentGame?.players
+                                            .map((player) {
+                                          final additionalPoints = round
+                                                  .points[player]
+                                                  ?.reducedAdditional ??
+                                              [];
+                                          return TableCell(
+                                            child: Text(
+                                              '${additionalPoints.length > i ? additionalPoints[i] : ''}',
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          );
+                                        }).toList()
+                                      ]),
                                 // Counted values
                                 if (round.points.values
                                     .any((element) => element.counted != null))
-                                  TableRow(children: [
-                                    TableCell(
-                                        child: Text(((value.currentGame?.rounds
-                                                        .indexOf(round) ??
-                                                    0) +
-                                                1)
-                                            .toString())),
-                                    ...?value.currentGame?.players
-                                        .map((player) => TableCell(
-                                                child: Text(
-                                              '${round.points[player]?.reducedCounted ?? ''}',
-                                              textAlign: TextAlign.center,
-                                            )))
-                                        .toList(),
-                                  ]),
+                                  TableRow(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              theme.colorScheme.surfaceVariant,
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: theme
+                                                      .colorScheme.primary))),
+                                      children: [
+                                        TableCell(
+                                            child: Text(
+                                          ((value.currentGame?.rounds
+                                                          .indexOf(round) ??
+                                                      0) +
+                                                  1)
+                                              .toString(),
+                                          style: TextStyle(
+                                              color: theme.colorScheme.primary),
+                                        )),
+                                        ...?value.currentGame?.players
+                                            .map((player) => TableCell(
+                                                    child: Text(
+                                                  '${round.points[player]?.reducedCounted ?? ''}',
+                                                  textAlign: TextAlign.center,
+                                                )))
+                                            .toList(),
+                                      ]),
                               ])
                           .toList()
                           .expand((element) => element)

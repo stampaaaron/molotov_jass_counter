@@ -42,6 +42,4 @@ class PlayerPoints {
   int get reducedCounted => ((counted ?? 0) / 10).round();
   List<int> get reducedAdditional =>
       additional.map((points) => (points / 10).round()).toList();
-
-  PlayerPoints();
 }

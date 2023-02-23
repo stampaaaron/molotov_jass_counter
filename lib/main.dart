@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         title: 'Molotov counter',
         theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-                seedColor: Color.fromARGB(255, 171, 117, 0)),
+                seedColor: const Color.fromARGB(255, 171, 117, 0)),
             useMaterial3: true),
         routes: {
           '/': (context) => HomeScreen(title: 'Molotov counter'),
