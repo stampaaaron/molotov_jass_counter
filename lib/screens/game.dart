@@ -1,7 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:molotov_jass_counter/models/current_game.dart';
-import 'package:molotov_jass_counter/utils/validation.dart';
 import 'package:molotov_jass_counter/widgets/simple_dialog_option_grid.dart';
 import 'package:provider/provider.dart';
 
@@ -91,6 +91,7 @@ class _GameScreenState extends State<GameScreen> {
                   Table(
                     columnWidths: const {0: FixedColumnWidth(10)},
                     children: [
+                      // Players row
                       TableRow(
                           decoration: BoxDecoration(
                               color: theme.colorScheme.secondaryContainer),
@@ -105,6 +106,7 @@ class _GameScreenState extends State<GameScreen> {
                                     )))
                                 .toList()
                           ]),
+                      // Totals row
                       TableRow(
                           decoration: BoxDecoration(
                             color: theme.colorScheme.secondaryContainer,
@@ -124,18 +126,52 @@ class _GameScreenState extends State<GameScreen> {
                                     )))
                                 .toList()
                           ]),
-                      ...?value.currentGame?.rows
-                          .map((row) => TableRow(children: [
-                                TableCell(child: Text("1")),
-                                ...?value.currentGame?.players
-                                    .map((player) => TableCell(
-                                            child: Text(
-                                          '${row.points[player] ?? ''}',
-                                          textAlign: TextAlign.end,
-                                        )))
-                                    .toList()
-                              ]))
+                      // Rounds
+                      ...?value.currentGame?.rounds
+                          .map((round) => [
+                                // Weise
+                                for (int i = 0;
+                                    i <
+                                        round.points.values
+                                            .map((e) => e.additional.length)
+                                            .reduce(max);
+                                    i++)
+                                  TableRow(children: [
+                                    TableCell(child: Container()),
+                                    ...?value.currentGame?.players
+                                        .map((player) {
+                                      final additionalPoints =
+                                          round.points[player]?.additional ??
+                                              [];
+                                      return TableCell(
+                                        child: Text(
+                                          '${additionalPoints.length > i ? additionalPoints[i] : ''}',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      );
+                                    }).toList()
+                                  ]),
+                                // Counted values
+                                if (round.points.values
+                                    .any((element) => element.counted != null))
+                                  TableRow(children: [
+                                    TableCell(
+                                        child: Text(((value.currentGame?.rounds
+                                                        .indexOf(round) ??
+                                                    0) +
+                                                1)
+                                            .toString())),
+                                    ...?value.currentGame?.players
+                                        .map((player) => TableCell(
+                                                child: Text(
+                                              '${round.points[player]?.counted ?? ''}',
+                                              textAlign: TextAlign.center,
+                                            )))
+                                        .toList(),
+                                  ]),
+                              ])
                           .toList()
+                          .expand((element) => element)
                     ],
                   ),
                 ],
