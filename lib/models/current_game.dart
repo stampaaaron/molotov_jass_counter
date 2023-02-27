@@ -19,4 +19,8 @@ class CurrentGameModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  finishGame() {
+    currentGame?.finished = true;
+  }
 }

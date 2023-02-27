@@ -1,9 +1,13 @@
+import 'dart:math';
+import "package:collection/collection.dart";
+
 import 'player.dart';
 
 class Game {
   int maxPoints = 100;
   List<Player> players = [];
   late final List<GameRound> rounds = [];
+  var finished = false;
 
   Map<Player, int> get totals => rounds.isNotEmpty
       ? rounds
@@ -27,6 +31,26 @@ class Game {
     rounds.add(GameRound(Map.fromEntries(
         players.map((player) => MapEntry(player, PlayerPoints())))));
   }
+
+  List<Player>? get finishedPlayer {
+    if (totals.isEmpty) return null;
+
+    var finishedPlayers =
+        totals.entries.where((total) => total.value >= maxPoints);
+
+    if (finishedPlayers.isEmpty) return null;
+
+    var groupedPlayers =
+        finishedPlayers.groupListsBy((playerPoints) => playerPoints.value);
+
+    var playersWithMaxPoints = groupedPlayers[groupedPlayers.keys.reduce(max)]
+        ?.map((e) => e.key)
+        .toList();
+
+    return playersWithMaxPoints;
+  }
+
+  bool get shouldFinish => finishedPlayer != null && !finished;
 }
 
 class GameRound {
