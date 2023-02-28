@@ -1,4 +1,4 @@
-package com.example.molotov_jass_counter
+package ch.stampaaaaron.molotov_jass_counter
 
 import io.flutter.embedding.android.FlutterActivity
 
