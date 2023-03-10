@@ -13,10 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Update build-number in YAML
-        run: sed -i 's/+99/${{ github.run_number }}/g' pubspec.yaml
-
       - name: Download Android keystore
         id: android_keystore
         uses: timheuer/base64-to-file@v1.0.3
@@ -46,7 +42,7 @@ jobs:
         run: flutter pub get
 
       - name: Start release build
-        run: flutter build appbundle
+        run: flutter build appbundle --build-number=${{ github.run_number }}
 
       - name: Upload Android Release
         uses: actions/upload-artifact@v2
