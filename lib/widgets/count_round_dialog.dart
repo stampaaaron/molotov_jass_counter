@@ -56,42 +56,39 @@ class _CountRoundDialogState extends State<CountRoundDialog> {
                 "$usedPoints von 157",
                 style: theme.textTheme.labelLarge,
               ),
-              ...widget.players
-                  .map((player) => Focus(
-                        child: TextFormField(
-                          autofocus: player == widget.players.first,
-                          decoration:
-                              InputDecoration(labelText: player.username),
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: notEmptyValidator,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onChanged: (value) {
-                            points[player] = int.tryParse(value) ?? 0;
-                          },
-                          onSaved: (value) {
-                            setState(() {
-                              if (value?.isEmpty ?? false) {
-                                points.remove(player);
-                              } else {
-                                points[player] = int.tryParse(value!) ?? 0;
-                              }
-                            });
-                          },
-                          controller: TextEditingController(
-                              text: (points[player] ?? '').toString()),
-                        ),
-                        onFocusChange: (hasFocus) {
-                          if (!hasFocus) {
-                            formKey.currentState?.save();
-                            handleFillingLastField();
+              ...widget.players.map((player) => Focus(
+                    child: TextFormField(
+                      autofocus: player == widget.players.first,
+                      decoration: InputDecoration(labelText: player.username),
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      validator: notEmptyValidator,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged: (value) {
+                        points[player] = int.tryParse(value) ?? 0;
+                      },
+                      onSaved: (value) {
+                        setState(() {
+                          if (value?.isEmpty ?? false) {
+                            points.remove(player);
+                          } else {
+                            points[player] = int.tryParse(value!) ?? 0;
                           }
-                        },
-                      ))
-                  .toList()
+                        });
+                      },
+                      controller: TextEditingController(
+                          text: (points[player] ?? '').toString()),
+                    ),
+                    onFocusChange: (hasFocus) {
+                      if (!hasFocus) {
+                        formKey.currentState?.save();
+                        handleFillingLastField();
+                      }
+                    },
+                  ))
             ],
           ),
         ),

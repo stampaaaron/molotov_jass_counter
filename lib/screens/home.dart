@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
           image: AssetImage("assets/jass-teppich.png"),
           fit: BoxFit.fitHeight,
         )),
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Center(
           child: Wrap(
             direction: Axis.horizontal,

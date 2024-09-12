@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
                 seedColor: const Color.fromARGB(255, 171, 117, 0)),
             useMaterial3: true),
         routes: {
-          '/': (context) => HomeScreen(title: 'Molotov counter'),
-          '/game/new': (context) => NewGameScreen(title: 'Neues Spiel'),
-          '/game': (context) => GameScreen(title: 'Spiel'),
+          '/': (context) => const HomeScreen(title: 'Molotov counter'),
+          '/game/new': (context) => const NewGameScreen(title: 'Neues Spiel'),
+          '/game': (context) => const GameScreen(title: 'Spiel'),
         },
       ),
     );

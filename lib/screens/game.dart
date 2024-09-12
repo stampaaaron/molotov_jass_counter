@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:molotov_jass_counter/models/current_game.dart';
+import 'package:molotov_jass_counter/utils/config.dart';
 import 'package:molotov_jass_counter/widgets/simple_dialog_option_grid.dart';
 import 'package:provider/provider.dart';
 
@@ -71,43 +72,31 @@ class _GameScreenState extends State<GameScreen> {
             ]));
 
     chooseAmountOfPoints() async {
-      final pointOptions = [
-        -20,
-        20,
-        -50,
-        50,
-        -70,
-        70,
-        -100,
-        100,
-        -150,
-        150,
-        -200,
-        200
-      ];
-
       return await showDialog<int>(
-          context: context,
-          builder: (context) =>
-              SimpleDialog(title: const Text('Weisen'), children: [
-                SimpleDialogOptionGrid(
-                    buildContent: (points) => Center(
-                            child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              points.isNegative ? Icons.remove : Icons.add,
-                              size: 20,
-                            ),
-                            Text(
-                              '${points.abs()}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )),
-                    options: pointOptions),
-              ]));
+        context: context,
+        builder: (context) => SimpleDialog(
+          title: const Text('Weisen'),
+          children: [
+            SimpleDialogOptionGrid(
+              buildContent: (points) => Center(
+                  child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    points.isNegative ? Icons.remove : Icons.add,
+                    size: 20,
+                  ),
+                  Text(
+                    '${points.abs()}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )),
+              options: Config.possiblePoints,
+            ),
+          ],
+        ),
+      );
     }
 
     countRound(List<Player> players) async =>
@@ -123,7 +112,7 @@ class _GameScreenState extends State<GameScreen> {
           final shouldContinue =
               await shouldContinueGame(value.currentGame!.finishedPlayer!);
           value.finishGame();
-          if (!shouldContinue) {
+          if (!shouldContinue && context.mounted) {
             Navigator.pushNamed(context, "/");
           }
         }
@@ -144,14 +133,12 @@ class _GameScreenState extends State<GameScreen> {
                         color: theme.colorScheme.secondaryContainer),
                     children: [
                       TableCell(child: Container()),
-                      ...?value.currentGame?.players
-                          .map((player) => TableCell(
-                                  child: Text(
-                                player.username ?? '',
-                                style: theme.textTheme.labelLarge,
-                                textAlign: TextAlign.center,
-                              )))
-                          .toList()
+                      ...?value.currentGame?.players.map((player) => TableCell(
+                              child: Text(
+                            player.username ?? '',
+                            style: theme.textTheme.labelLarge,
+                            textAlign: TextAlign.center,
+                          )))
                     ]),
                 // Totals row
                 TableRow(
@@ -162,15 +149,12 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                     children: [
                       TableCell(child: Container()),
-                      ...?value.currentGame?.players
-                          .map((player) => TableCell(
-                                  child: Text(
-                                '${value.currentGame?.totals[player] ?? 0}',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )))
-                          .toList()
+                      ...?value.currentGame?.players.map((player) => TableCell(
+                              child: Text(
+                            '${value.currentGame?.totals[player] ?? 0}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )))
                     ]),
                 // Rounds
                 ...?value.currentGame?.rounds
@@ -186,8 +170,8 @@ class _GameScreenState extends State<GameScreen> {
                                 decoration: BoxDecoration(
                                   border: Border(
                                       bottom: BorderSide(
-                                          color: theme
-                                              .colorScheme.surfaceVariant)),
+                                          color: theme.colorScheme
+                                              .surfaceContainerHighest)),
                                 ),
                                 children: [
                                   TableCell(child: Container()),
@@ -202,14 +186,15 @@ class _GameScreenState extends State<GameScreen> {
                                         textAlign: TextAlign.center,
                                       ),
                                     );
-                                  }).toList()
+                                  })
                                 ]),
                           // Counted values
                           if (round.points.values
                               .any((element) => element.counted != null))
                             TableRow(
                                 decoration: BoxDecoration(
-                                    color: theme.colorScheme.surfaceVariant,
+                                    color: theme
+                                        .colorScheme.surfaceContainerHighest,
                                     border: Border(
                                         bottom: BorderSide(
                                             color: theme.colorScheme.primary))),
@@ -229,8 +214,7 @@ class _GameScreenState extends State<GameScreen> {
                                               child: Text(
                                             '${round.points[player]?.reducedCounted ?? ''}',
                                             textAlign: TextAlign.center,
-                                          )))
-                                      .toList(),
+                                          ))),
                                 ]),
                         ])
                     .toList()
