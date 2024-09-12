@@ -14,4 +14,4 @@ jobs:
         id: release
         with:
           release-type: dart
-          package-name: ch.stampaaaaron.molotov_jass_counter
+          package-name: ch.openscript.molotov_jass_counter

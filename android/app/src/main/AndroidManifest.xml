@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ch.stampaaaaron.molotov_jass_counter">
+    package="ch.openscript.molotov_jass_counter">
    <application
         android:label="molotov_jass_counter"
         android:name="${applicationName}"

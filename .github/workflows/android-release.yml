@@ -68,7 +68,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
-          packageName: ch.stampaaaaron.molotov_jass_counter
+          packageName: ch.openscript.molotov_jass_counter
           releaseFiles: app-release.aab
           track: internal
           status: draft
