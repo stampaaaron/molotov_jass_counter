@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:molotov_jass_counter/models/game.dart';
 
 import '../models/player.dart';
 import '../utils/validation.dart';
 
 class CountRoundDialog extends StatefulWidget {
   final List<Player> players;
+  final GameRound? round;
 
-  const CountRoundDialog({super.key, required this.players});
+  const CountRoundDialog({super.key, required this.players, this.round});
 
   @override
   State<CountRoundDialog> createState() => _CountRoundDialogState();
@@ -21,6 +23,15 @@ class _CountRoundDialogState extends State<CountRoundDialog> {
   get usedPoints => points.isEmpty
       ? 0
       : points.values.map((e) => e ?? 0).reduce((cur, prev) => prev + cur);
+
+  @override
+  void initState() {
+    if (widget.round != null) {
+      points = widget.round!.points.map(
+          (player, playerPoints) => MapEntry(player, playerPoints.counted));
+    }
+    super.initState();
+  }
 
   @override
   build(context) {
@@ -44,7 +55,7 @@ class _CountRoundDialogState extends State<CountRoundDialog> {
     }
 
     return AlertDialog(
-      title: const Text("Runde zählen"),
+      title: Text(widget.round == null ? "Runde zählen" : "Runde bearbeiten"),
       content: SingleChildScrollView(
         child: Form(
           key: formKey,

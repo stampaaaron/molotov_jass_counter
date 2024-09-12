@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:molotov_jass_counter/models/current_game.dart';
+import 'package:molotov_jass_counter/models/game.dart';
 import 'package:molotov_jass_counter/utils/config.dart';
 import 'package:molotov_jass_counter/widgets/simple_dialog_option_grid.dart';
 import 'package:provider/provider.dart';
@@ -59,9 +60,10 @@ class _GameScreenState extends State<GameScreen> {
     var theme = Theme.of(context);
 
     choosePlayer(List<Player> players) async => await showDialog<Player>(
-        context: context,
-        builder: (context) =>
-            SimpleDialog(title: const Text('Weisen'), children: [
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: const Text('Weisen'),
+            children: [
               SimpleDialogOptionGrid(
                 buildContent: (player) => Text(
                   '${player.username}',
@@ -69,7 +71,9 @@ class _GameScreenState extends State<GameScreen> {
                 ),
                 options: players,
               ),
-            ]));
+            ],
+          ),
+        );
 
     chooseAmountOfPoints() async {
       return await showDialog<int>(
@@ -99,10 +103,14 @@ class _GameScreenState extends State<GameScreen> {
       );
     }
 
-    countRound(List<Player> players) async =>
+    countRound(List<Player> players, GameRound? round) async =>
         await showDialog<Map<Player, int?>>(
-            context: context,
-            builder: (builder) => CountRoundDialog(players: players));
+          context: context,
+          builder: (builder) => CountRoundDialog(
+            players: players,
+            round: round,
+          ),
+        );
 
     return Consumer<CurrentGameModel>(builder: (context, value, child) {
       if (value.currentGame == null) return Container();
@@ -129,17 +137,18 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 // Players row
                 TableRow(
-                    decoration: BoxDecoration(
-                        color: theme.colorScheme.secondaryContainer),
-                    children: [
-                      TableCell(child: Container()),
-                      ...?value.currentGame?.players.map((player) => TableCell(
-                              child: Text(
-                            player.username ?? '',
-                            style: theme.textTheme.labelLarge,
-                            textAlign: TextAlign.center,
-                          )))
-                    ]),
+                  decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer),
+                  children: [
+                    TableCell(child: Container()),
+                    ...?value.currentGame?.players.map((player) => TableCell(
+                            child: Text(
+                          player.username ?? '',
+                          style: theme.textTheme.labelLarge,
+                          textAlign: TextAlign.center,
+                        )))
+                  ],
+                ),
                 // Totals row
                 TableRow(
                     decoration: BoxDecoration(
@@ -158,65 +167,79 @@ class _GameScreenState extends State<GameScreen> {
                     ]),
                 // Rounds
                 ...?value.currentGame?.rounds
-                    .map((round) => [
-                          // Weise
-                          for (int i = 0;
-                              i <
-                                  round.points.values
-                                      .map((e) => e.additional.length)
-                                      .reduce(max);
-                              i++)
-                            TableRow(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: theme.colorScheme
-                                              .surfaceContainerHighest)),
-                                ),
-                                children: [
-                                  TableCell(child: Container()),
-                                  ...?value.currentGame?.players.map((player) {
-                                    final additionalPoints = round
-                                            .points[player]
-                                            ?.reducedAdditional ??
-                                        [];
-                                    return TableCell(
-                                      child: Text(
-                                        '${additionalPoints.length > i ? additionalPoints[i] : ''}',
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    );
-                                  })
-                                ]),
-                          // Counted values
-                          if (round.points.values
-                              .any((element) => element.counted != null))
-                            TableRow(
-                                decoration: BoxDecoration(
-                                    color: theme
-                                        .colorScheme.surfaceContainerHighest,
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: theme.colorScheme.primary))),
-                                children: [
-                                  TableCell(
-                                      child: Text(
-                                    ((value.currentGame?.rounds
-                                                    .indexOf(round) ??
-                                                0) +
-                                            1)
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: theme.colorScheme.primary),
+                    .map((round) {
+                      final additionalsRowCount = round.points.values
+                          .map((e) => e.additional.length)
+                          .reduce(max);
+
+                      final roundIndex =
+                          (value.currentGame?.rounds.indexOf(round) ?? 0);
+
+                      return [
+                        // Weise
+                        for (int i = 0; i < additionalsRowCount; i++)
+                          TableRow(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: theme.colorScheme
+                                            .surfaceContainerHighest)),
+                              ),
+                              children: [
+                                TableCell(child: Container()),
+                                ...?value.currentGame?.players.map((player) {
+                                  final additionalPoints =
+                                      round.points[player]?.reducedAdditional ??
+                                          [];
+                                  return TableCell(
+                                    child: Text(
+                                      '${additionalPoints.length > i ? additionalPoints[i] : ''}',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                })
+                              ]),
+                        // Counted values
+                        if (round.points.values
+                            .any((element) => element.counted != null))
+                          TableRow(
+                            decoration: BoxDecoration(
+                                color:
+                                    theme.colorScheme.surfaceContainerHighest,
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: theme.colorScheme.primary))),
+                            children: [
+                              TableCell(
+                                  child: Text(
+                                (roundIndex + 1).toString(),
+                                style:
+                                    TextStyle(color: theme.colorScheme.primary),
+                              )),
+                              ...?value.currentGame?.players.map((player) =>
+                                  GestureDetector(
+                                    onLongPress: () async {
+                                      if (value.currentGame?.players != null) {
+                                        final points = await countRound(
+                                          value.currentGame!.players,
+                                          round,
+                                        );
+
+                                        if (points == null) return;
+
+                                        value.updateRound(roundIndex, points);
+                                      }
+                                    },
+                                    child: TableCell(
+                                        child: Text(
+                                      '${round.points[player]?.reducedCounted ?? ''}',
+                                      textAlign: TextAlign.center,
+                                    )),
                                   )),
-                                  ...?value.currentGame?.players
-                                      .map((player) => TableCell(
-                                              child: Text(
-                                            '${round.points[player]?.reducedCounted ?? ''}',
-                                            textAlign: TextAlign.center,
-                                          ))),
-                                ]),
-                        ])
+                            ],
+                          )
+                      ];
+                    })
                     .toList()
                     .expand((element) => element)
               ],
@@ -269,7 +292,7 @@ class _GameScreenState extends State<GameScreen> {
               onPressed: () async {
                 if (value.currentGame?.players == null) return;
 
-                var points = await countRound(value.currentGame!.players);
+                var points = await countRound(value.currentGame!.players, null);
 
                 if (points == null) return;
 
