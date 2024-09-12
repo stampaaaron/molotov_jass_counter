@@ -3,7 +3,14 @@ import 'package:molotov_jass_counter/models/game.dart';
 import 'package:molotov_jass_counter/models/player.dart';
 
 class CurrentGameModel extends ChangeNotifier {
-  Game? currentGame;
+  Game? _currentGame;
+
+  Game? get currentGame => _currentGame;
+
+  set currentGame(Game? value) {
+    _currentGame = value;
+    notifyListeners();
+  }
 
   void addPointsFor(int points, Player player) {
     currentGame?.rounds.last.points[player]?.additional.add(points);

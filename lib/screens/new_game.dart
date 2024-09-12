@@ -116,12 +116,13 @@ class PlayerForm extends StatefulWidget {
 
   late final TextEditingController _usernameController;
 
-  PlayerForm(
-      {super.key,
-      required this.index,
-      required this.player,
-      required this.onDelete,
-      required this.amountOfPlayers}) {
+  PlayerForm({
+    super.key,
+    required this.index,
+    required this.player,
+    required this.onDelete,
+    required this.amountOfPlayers,
+  }) {
     _usernameController = TextEditingController(text: player.username);
   }
 
@@ -149,10 +150,11 @@ class _PlayerFormState extends State<PlayerForm> {
           ),
         ),
         IconButton(
-            onPressed: widget.amountOfPlayers > 3
-                ? () => widget.onDelete(widget.index)
-                : null,
-            icon: const Icon(Icons.delete))
+          onPressed: widget.amountOfPlayers > 3
+              ? () => widget.onDelete(widget.index)
+              : null,
+          icon: const Icon(Icons.delete),
+        )
       ],
     );
   }

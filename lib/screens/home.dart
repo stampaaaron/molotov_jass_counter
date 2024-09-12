@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:molotov_jass_counter/models/current_game.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.title});
@@ -31,14 +33,19 @@ class HomeScreen extends StatelessWidget {
                 icon: const Icon(Icons.add),
                 label: const Text("Neues Spiel"),
               ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                onPressed: () => Navigator.pushNamed(context, '/game'),
-                icon: const Icon(Icons.send),
-                label: const Text("Letztes Spiel weiterführen"),
-              ),
+              Consumer<CurrentGameModel>(builder: (context, value, child) {
+                print("alöskjfdslfkj");
+                if (value.currentGame == null) return Container();
+
+                return ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  onPressed: () => Navigator.pushNamed(context, '/game'),
+                  icon: const Icon(Icons.send),
+                  label: const Text("Letztes Spiel weiterführen"),
+                );
+              })
             ],
           ),
         ),
