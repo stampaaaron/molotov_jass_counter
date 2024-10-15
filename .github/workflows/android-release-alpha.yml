@@ -1,9 +1,6 @@
 name: Android Release
 
 on:
-  push:
-    tags:
-      - "**"
   workflow_dispatch:
 
 jobs:
@@ -70,5 +67,4 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: ch.openscript.molotov_jass_counter
           releaseFiles: app-release.aab
-          track: internal
-          status: draft
+          track: alpha
