@@ -19,13 +19,13 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => CurrentGameModel(),
       child: MaterialApp(
-        title: 'Molotov counter',
+        title: 'Molotow counter',
         theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color.fromARGB(255, 171, 117, 0)),
             useMaterial3: true),
         routes: {
-          '/': (context) => const HomeScreen(title: 'Molotov counter'),
+          '/': (context) => const HomeScreen(title: 'Molotow counter'),
           '/game/new': (context) => const NewGameScreen(title: 'Neues Spiel'),
           '/game': (context) => const GameScreen(title: 'Spiel'),
         },
