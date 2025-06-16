@@ -1,4 +1,4 @@
-name: Android Release
+name: Android Release Production
 
 on:
   workflow_dispatch:
@@ -68,3 +68,4 @@ jobs:
           packageName: ch.openscript.molotov_jass_counter
           releaseFiles: app-release.aab
           track: production
+          changesNotSentForReview: true
