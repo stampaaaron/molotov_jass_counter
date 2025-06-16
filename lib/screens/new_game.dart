@@ -45,43 +45,41 @@ class _NewGameScreenState extends State<NewGameScreen> {
       ),
       body: Padding(
           padding: const EdgeInsets.all(12),
-          child: Expanded(
-            child: ListView(
-              children: [
-                Text(
-                  "Endpunktzahl",
-                  style: theme.textTheme.labelLarge,
-                ),
-                const SizedBox(height: 12),
-                SegmentedButton(
-                  selected: {_game.maxPoints},
-                  segments: const [
-                    ButtonSegment(value: 50, label: Text('50')),
-                    ButtonSegment(value: 100, label: Text('100')),
-                    ButtonSegment(value: 150, label: Text('150')),
-                  ],
-                  onSelectionChanged: (value) {
-                    setState(() {
-                      _game.maxPoints = value.first;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "Mitspieler ${_game.players.length >= 8 ? '(max. 8)' : ''}",
-                  style: theme.textTheme.labelLarge,
-                ),
-                Form(
-                  key: formKey,
-                  child: Column(children: _getPlayerForms()),
-                ),
-                const SizedBox(height: 20),
-                OutlinedButton.icon(
-                    onPressed: _game.players.length < 8 ? _addPlayer : null,
-                    icon: const Icon(Icons.add),
-                    label: const Text("Hinzufügen"))
-              ],
-            ),
+          child: ListView(
+            children: [
+              Text(
+                "Endpunktzahl",
+                style: theme.textTheme.labelLarge,
+              ),
+              const SizedBox(height: 12),
+              SegmentedButton(
+                selected: {_game.maxPoints},
+                segments: const [
+                  ButtonSegment(value: 50, label: Text('50')),
+                  ButtonSegment(value: 100, label: Text('100')),
+                  ButtonSegment(value: 150, label: Text('150')),
+                ],
+                onSelectionChanged: (value) {
+                  setState(() {
+                    _game.maxPoints = value.first;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Mitspieler ${_game.players.length >= 8 ? '(max. 8)' : ''}",
+                style: theme.textTheme.labelLarge,
+              ),
+              Form(
+                key: formKey,
+                child: Column(children: _getPlayerForms()),
+              ),
+              const SizedBox(height: 20),
+              OutlinedButton.icon(
+                  onPressed: _game.players.length < 8 ? _addPlayer : null,
+                  icon: const Icon(Icons.add),
+                  label: const Text("Hinzufügen"))
+            ],
           )),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12),
