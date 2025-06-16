@@ -34,7 +34,6 @@ class HomeScreen extends StatelessWidget {
                 label: const Text("Neues Spiel"),
               ),
               Consumer<CurrentGameModel>(builder: (context, value, child) {
-                print("alöskjfdslfkj");
                 if (value.currentGame == null) return Container();
 
                 return ElevatedButton.icon(
