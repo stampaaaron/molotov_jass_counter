@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/stampaaaron/molotov_jass_counter/compare/v1.0.0...v1.1.0) (2025-06-16)
+
+
+### Features
+
+* add splash screen and launcher icons ([62ce733](https://github.com/stampaaaron/molotov_jass_counter/commit/62ce733550ba4a404a420cd894bda1f694d09b24))
+
+
+### Bug Fixes
+
+* resolve rendering new game form screen ([92bb3c2](https://github.com/stampaaaron/molotov_jass_counter/commit/92bb3c214227bcf9ad93297723d89ec901a2d110))
+
 ## 1.0.0 (2025-06-13)
 
 
