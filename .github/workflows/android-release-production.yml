@@ -38,8 +38,11 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Run number with offset
+        run: echo "GITHUB_RUN_NUMBER_WITH_OFFSET=$(($GITHUB_RUN_NUMBER+1000))" >> $GITHUB_ENV
+
       - name: Start release build
-        run: flutter build appbundle --build-number=${{ github.run_number }}
+        run: flutter build appbundle --build-number=$GITHUB_RUN_NUMBER_WITH_OFFSET
 
       - name: Upload Android Release
         uses: actions/upload-artifact@v4
