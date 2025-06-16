@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.openscript.molotov_jass_counter">
    <application
-        android:label="molotov_jass_counter"
+        android:label="Molotow Jass Zähler"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
